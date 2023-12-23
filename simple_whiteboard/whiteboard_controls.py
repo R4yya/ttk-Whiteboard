@@ -1,4 +1,6 @@
+from tkinter import filedialog
 from tkinter.colorchooser import askcolor
+from PIL import ImageGrab
 import keyboard
 
 
@@ -19,6 +21,8 @@ class WhiteboardControls(object):
                                            self.paint)
 
         keyboard.add_hotkey('ctrl+z', self.undo_last_action)
+
+        keyboard.add_hotkey('ctrl+s', self.save_board)
 
     def choose_color_on_canvas(self, event):
         color = askcolor(title='Choose color')[1]
@@ -46,3 +50,20 @@ class WhiteboardControls(object):
 
     def undo_last_action(self):
         self.whiteboard_canvas.undo_last_action()
+
+    def save_board(self):
+        file_path = filedialog.asksaveasfilename(
+            defaultextension='.png',
+            filetypes=[('PNG files', '*.png'),
+                       ("JPEG files", "*.jpg"),
+                       ("All files", "*.*")]
+        )
+
+        if file_path:
+            x = self.whiteboard_canvas.canvas.winfo_rootx()
+            y = self.whiteboard_canvas.canvas.winfo_rooty()
+            x1 = x + self.whiteboard_canvas.canvas.winfo_width()
+            y1 = y + self.whiteboard_canvas.canvas.winfo_height()
+
+            image = ImageGrab.grab(bbox=(x, y, x1, y1))
+            image.save(file_path)
