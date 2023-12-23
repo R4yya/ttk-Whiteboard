@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 from tkinter.colorchooser import askcolor
 
 
@@ -18,27 +17,8 @@ class WhiteboardControls(object):
         self.whiteboard_canvas.canvas.bind('<B1-Motion>',
                                            self.paint)
 
-        self.style = ttk.Style()
-        self.style.configure('TButton',
-                             padding=6,
-                             relief='flat',
-                             background='#ccc')
-
-        self.color_button = ttk.Button(root,
-                                       text='Choose color',
-                                       command=self.choose_color_on_button)
-        self.color_button.pack(side=tk.LEFT, padx=10)
-
-        self.radius_label = ttk.Label(root, text=f'Brush size: {self.whiteboard_canvas.brush_radius}')
-        self.radius_label.pack(side=tk.LEFT, padx=10)
-
     def choose_color_on_canvas(self, event):
-        color = askcolor(title='Выберите цвет')[1]
-        if color:
-            self.whiteboard_canvas.line_color = color
-
-    def choose_color_on_button(self):
-        color = askcolor(title='Выберите цвет')[1]
+        color = askcolor(title='Choose color')[1]
         if color:
             self.whiteboard_canvas.line_color = color
 
@@ -53,8 +33,6 @@ class WhiteboardControls(object):
                 self.whiteboard_canvas.min_brush_radius,
                 self.whiteboard_canvas.brush_radius - 1
             )
-
-        self.radius_label.config(text=f'Brush size: {self.whiteboard_canvas.brush_radius}')
 
     def start_paint(self, event):
         self.last_x = event.x
