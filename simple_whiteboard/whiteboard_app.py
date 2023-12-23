@@ -1,5 +1,5 @@
 import tkinter as tk
-from interface import WhiteboardInterface
+from whiteboard_interface import WhiteboardInterface
 
 
 class WhiteboardApp(object):
