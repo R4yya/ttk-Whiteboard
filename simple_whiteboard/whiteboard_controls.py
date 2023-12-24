@@ -1,13 +1,14 @@
 from tkinter import filedialog
 from tkinter.colorchooser import askcolor
 from PIL import ImageGrab
-import keyboard
 
 
 class WhiteboardControls(object):
-    def __init__(self, root, whiteboard_canvas):
-        self.whiteboard_canvas = whiteboard_canvas
+    def __init__(self, root, whiteboard_canvas, notebook):
         self.root = root
+        self.whiteboard_canvas = whiteboard_canvas
+        self.notebook = notebook
+        self.active_canvas = None
 
         self.whiteboard_canvas.canvas.bind('<Button-3>',
                                            self.choose_color_on_canvas)
@@ -20,12 +21,13 @@ class WhiteboardControls(object):
         self.whiteboard_canvas.canvas.bind('<B1-Motion>',
                                            self.paint)
 
-        keyboard.add_hotkey('ctrl+z', self.undo_last_action)
+        # self.root.bind('<Control-z>', self.undo_last_action)
 
-        keyboard.add_hotkey('ctrl+s', self.save_board)
+        self.notebook.bind('<Control-s>', self.save_board)
 
     def choose_color_on_canvas(self, event):
         color = askcolor(title='Choose color')[1]
+
         if color:
             self.whiteboard_canvas.line_color = color
 
@@ -48,22 +50,26 @@ class WhiteboardControls(object):
     def paint(self, event):
         self.whiteboard_canvas.paint(event)
 
-    def undo_last_action(self):
+    def undo_last_action(self, event=None):
         self.whiteboard_canvas.undo_last_action()
 
-    def save_board(self):
-        file_path = filedialog.asksaveasfilename(
-            defaultextension='.png',
-            filetypes=[('PNG files', '*.png'),
-                       ("JPEG files", "*.jpg"),
-                       ("All files", "*.*")]
-        )
+    def save_board(self, event=None):
+        if event:
+            current_tab_index = self.notebook.index(self.notebook.select())
+            current_tab = self.notebook.winfo_children()[current_tab_index]
 
-        if file_path:
-            x = self.whiteboard_canvas.canvas.winfo_rootx()
-            y = self.whiteboard_canvas.canvas.winfo_rooty()
-            x1 = x + self.whiteboard_canvas.canvas.winfo_width()
-            y1 = y + self.whiteboard_canvas.canvas.winfo_height()
+            file_path = filedialog.asksaveasfilename(
+                defaultextension='.png',
+                filetypes=[('PNG files', '*.png'),
+                           ("JPEG files", "*.jpg"),
+                           ("All files", "*.*")]
+            )
 
-            image = ImageGrab.grab(bbox=(x, y, x1, y1))
-            image.save(file_path)
+            if file_path:
+                x = current_tab.winfo_rootx()
+                y = current_tab.winfo_rooty()
+                x1 = x + current_tab.winfo_width()
+                y1 = y + current_tab.winfo_height()
+
+                image = ImageGrab.grab(bbox=(x, y, x1, y1))
+                image.save(file_path)
