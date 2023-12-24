@@ -28,8 +28,6 @@ class WhiteboardInterface:
             accelerator='Ctrl+S'
         )
 
-        self.root.bind('<Control-n>', self.create_new_whiteboard)
-
         edit_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label='Edit', menu=edit_menu)
         edit_menu.add_command(
@@ -38,12 +36,18 @@ class WhiteboardInterface:
             accelerator='Ctrl+Z'
         )
 
+        self.root.bind('<Control-n>', self.create_new_whiteboard)
+
     def create_new_whiteboard(self, event=None):
         whiteboard_frame = ttk.Frame(self.notebook)
         whiteboard_frame.pack(expand=tk.YES, fill=tk.BOTH)
 
         canvas = WhiteboardCanvas(whiteboard_frame)
-        controls = WhiteboardControls(whiteboard_frame, canvas, self.notebook)
+        controls = WhiteboardControls(
+            whiteboard_frame,
+            canvas,
+            self.notebook
+        )
         canvas.controls = controls
 
         self.notebook.add(

@@ -54,22 +54,21 @@ class WhiteboardControls(object):
         self.whiteboard_canvas.undo_last_action()
 
     def save_board(self, event=None):
-        if event:
-            current_tab_index = self.notebook.index(self.notebook.select())
-            current_tab = self.notebook.winfo_children()[current_tab_index]
+        current_tab_index = self.notebook.index(self.notebook.select())
+        current_tab = self.notebook.winfo_children()[current_tab_index]
 
-            file_path = filedialog.asksaveasfilename(
-                defaultextension='.png',
-                filetypes=[('PNG files', '*.png'),
-                           ("JPEG files", "*.jpg"),
-                           ("All files", "*.*")]
-            )
+        file_path = filedialog.asksaveasfilename(
+            defaultextension='.png',
+            filetypes=[('PNG files', '*.png'),
+                       ("JPEG files", "*.jpg"),
+                       ("All files", "*.*")]
+        )
 
-            if file_path:
-                x = current_tab.winfo_rootx()
-                y = current_tab.winfo_rooty()
-                x1 = x + current_tab.winfo_width()
-                y1 = y + current_tab.winfo_height()
+        if file_path:
+            x = current_tab.winfo_rootx()
+            y = current_tab.winfo_rooty()
+            x1 = x + current_tab.winfo_width()
+            y1 = y + current_tab.winfo_height()
 
-                image = ImageGrab.grab(bbox=(x, y, x1, y1))
-                image.save(file_path)
+            image = ImageGrab.grab(bbox=(x, y, x1, y1))
+            image.save(file_path)
